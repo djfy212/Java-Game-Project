@@ -1,4 +1,4 @@
-package game;
+package Ranking;
 
 import java.sql.*;
 import java.util.Scanner;
