@@ -24,8 +24,10 @@ public class TileManager {
 		mapTileNum = new int[gp.maxMap][gp.maxWorldCol][gp.maxWorldRow];
 		
 		getTileImage();
-		loadMap("/maps/world01.txt",0);
-		loadMap("/maps/world02.txt",1);
+		loadMap("/maps/house01.txt",0);
+		loadMap("/maps/house02.txt",1);
+		loadMap("/maps/world01.txt",2);
+		loadMap("/maps/field01.txt",3);
 	}
 	//타일 이미지 불러오기
 	public void getTileImage() {
@@ -33,6 +35,8 @@ public class TileManager {
 		setup(0, "grass", false);
 		setup(1, "wall", true);
 		setup(2, "water", true);
+		setup(3, "black", false);
+		setup(4, "black", true);
 
 	}
 	public void setup(int index, String imageName, boolean collision) {
@@ -101,7 +105,7 @@ public class TileManager {
 			   worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) {
 				
 				g2.drawImage(tile[tileNum].image, screenX, screenY, null);
-				//g2.drawImage(tile[tileNum].image, worldX, worldY, null);
+				
 			}
 			worldCol++;
 			

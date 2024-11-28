@@ -2,7 +2,9 @@ package main;
 
 import java.awt.CardLayout;
 
+
 import javax.swing.JFrame;
+
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
@@ -15,9 +17,9 @@ public class Main{
 	public final int game=1;
 	public final int menu=2;
 
-	
 	// JFrame 생성
     public static JFrame window;
+    
     public static CardLayout layout;
     public static JPanel mainPanel;
     
@@ -25,6 +27,7 @@ public class Main{
     TitlePanel titlePanel;
     GamePanel gamePanel;
     MenuPanel menuPanel;
+
     // 메인 생성자
     public Main() {
     	
@@ -41,16 +44,18 @@ public class Main{
         titlePanel = new TitlePanel(this);
         gamePanel = new GamePanel(this);
         menuPanel = new MenuPanel(this, gamePanel);
+
         
         // CardLayout에 패널들 추가
         mainPanel.add(titlePanel, "tp");
         mainPanel.add(gamePanel, "gp");
         mainPanel.add(menuPanel, "mp");
-        
+
         // JFrame에 메인 패널 추가
         window.add(mainPanel);
+
         window.pack();
-        
+
         window.setLocationRelativeTo(null); // 화면 중앙에 창을 위치시킴
         window.setVisible(true);
         
@@ -58,11 +63,12 @@ public class Main{
         titlePanel.startThread();
         gamePanel.setupGame();
         gamePanel.startThread();
-        menuPanel.startThread();
+        menuPanel.startThread(); 
+
     }
 		
 	public static void main(String[] args) {
         SwingUtilities.invokeLater(Main::new);
 	}
-
 }
+

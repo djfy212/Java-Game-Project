@@ -18,7 +18,8 @@ public class Entity {
 	GamePanel gp;
 	public BufferedImage up1, up2, down1, down2, left1, left2, right1, right2;
 	public BufferedImage att_up1, att_up2, att_down1, att_down2, att_left1, att_left2, att_right1, att_right2;
-	public BufferedImage image;	
+	public BufferedImage image, questImage;	
+	public BufferedImage standing;
 	public Rectangle solidArea = new Rectangle(0,0,48,48);
 	public Rectangle attackArea = new Rectangle(0,0,0,0);
 	public int solidAreaDefaultX, solidAreaDefaultY;
@@ -36,15 +37,20 @@ public class Entity {
 	public boolean alive = true;
 	public boolean dying = false;
 	boolean hpBarOn = false;
-	public boolean speaking = false;
+	boolean questMarkOn = false;
+	boolean request = false;
+	boolean drinking = false;
 	public String job;
 	
 	//COUNTER
 	public int spriteCounter = 0;
 	public int actionLockCounter = 0;
 	public int invincibleCounter = 0;
+	public int shotAvailableCounter = 0;
+	public int potionCounter = 0;
 	int dyingCounter = 0;
 	int hpBarCounter = 0;
+	
 	
 	//CHARACTER ATTRIBUTES 캐릭터 요소
 	public String name;		//이름
@@ -62,6 +68,7 @@ public class Entity {
 	public int coin;		//재화 골드
 	public Entity currentWeapon;//현재 무기
 	public Entity currentShield;//현재 방어구
+	public Projectile projectile;
 	public String elements; //속성
 	
 	//ITEM ATTRIBUTES 아이템 요소
@@ -75,6 +82,7 @@ public class Entity {
 	public int price;
 	public boolean stackable = false;
 	public int amount = 1;
+	public String nameKr;
 	
 	//TYPE
 	public int type; // 0 = player, 1 = npc, 2 = monster...
@@ -85,9 +93,18 @@ public class Entity {
 	public final int type_shield = 4;
 	public final int type_consumable = 5;
 	public final int type_matter = 6;
+	public final int type_quest_npc = 7;
+	public final int type_major_npc = 9;
+	public final int type_pickupOnly = 10;
+	public final int type_obstacle = 11;
 	
 	public Entity(GamePanel gp) {
 		this.gp = gp;
+		try {
+			questImage = ImageIO.read(getClass().getResourceAsStream("/object/questMark.png"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void setAction() {}
@@ -95,12 +112,14 @@ public class Entity {
 	//npc 대화 출력
 	public void speak() {
 		
-		speaking = true;
-		if(dialogues[dialogueIndex] == null) {
-			dialogueIndex = 0;
-		}
+
 		gp.ui.currentDialogue = dialogues[dialogueIndex];
 		dialogueIndex++;
+		if(dialogues[dialogueIndex] == null) {
+			gp.player.speaking = false;
+			//gp.keyH.enterPressed = false;
+			dialogueIndex = 0;
+		}
 		//대화 시 방향 전환
 		switch(gp.player.direction) {
 		case "up":
@@ -218,6 +237,9 @@ public class Entity {
 				}
 			}		
 			
+			if(type == type_quest_npc && questMarkOn == true) {
+				g2.drawImage(questImage, screenX, screenY -  gp.tileSize - 10, gp.tileSize,gp.tileSize,null);
+			}
 			
 			if(invincible == true) {
 				hpBarOn = true;

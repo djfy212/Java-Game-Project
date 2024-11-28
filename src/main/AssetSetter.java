@@ -1,5 +1,6 @@
 package main;
 
+import entity.NPC_quest;
 import entity.NPC_seller;
 import entity.NPC_test;
 import monster.Mon_GreenSlime;
@@ -25,20 +26,26 @@ public class AssetSetter {
 	//NPC세팅
 	public void setNPC() {
 		
-		int mapNum = 0;
+		int mapNum = 1;
 		int i=0;
 		gp.npc[mapNum][i] = new NPC_test(gp);
-		gp.npc[mapNum][i].worldX = gp.tileSize*13;
-		gp.npc[mapNum][i].worldY = gp.tileSize*13;
+		gp.npc[mapNum][i].worldX = gp.tileSize*25;
+		gp.npc[mapNum][i].worldY = gp.tileSize*15;
 		i++;
+		mapNum = 2;
+		i=0;
 		gp.npc[mapNum][i] = new NPC_seller(gp);
 		gp.npc[mapNum][i].worldX = gp.tileSize*15;
 		gp.npc[mapNum][i].worldY = gp.tileSize*15;
+		i++;
+		gp.npc[mapNum][i] = new NPC_quest(gp);
+		gp.npc[mapNum][i].worldX = gp.tileSize*10;
+		gp.npc[mapNum][i].worldY = gp.tileSize*27;
 	}
 	//몬스터 세팅
 	public void setMonster() {
 		
-		int mapNum = 0;
+		int mapNum = 3;
 		int i=0;
 		gp.monster[mapNum][i] = new Mon_GreenSlime(gp);
 		gp.monster[mapNum][i].worldX = gp.tileSize*7;
@@ -60,8 +67,6 @@ public class AssetSetter {
 		gp.monster[mapNum][i].worldX = gp.tileSize*10;
 		gp.monster[mapNum][i].worldY = gp.tileSize*18;
 		i++;
-		
-		mapNum = 1;
 		gp.monster[mapNum][i] = new Mon_GreenSlime(gp);
 		gp.monster[mapNum][i].worldX = gp.tileSize*10;
 		gp.monster[mapNum][i].worldY = gp.tileSize*17;

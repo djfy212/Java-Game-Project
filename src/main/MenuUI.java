@@ -60,38 +60,63 @@ public class MenuUI {
 	public void drawCharInfo() {
 		
 		g2.setColor(Color.white);
-		g2.setFont(g2.getFont().deriveFont(32F));
+		g2.setFont(g2.getFont().deriveFont(30F));
 		int textX = 20;
-		int textY = 100;
-		// Names
-		g2.drawString("Level", textX, textY);
-		textY += 32;
-		g2.drawString("HP", textX, textY);
-		textY += 32;
-		g2.drawString("MP", textX, textY);
-		textY += 32;
-		g2.drawString("Attack", textX, textY);
-		textY += 32;
-		g2.drawString("Defense", textX, textY);
+		int textY = 120;
+
+		g2.drawString("Lv.", textX, textY);
+		g2.drawString(Integer.toString(mp.gp.player.level), textX+100, textY);
 		textY += 32;
 		g2.drawString("Exp", textX, textY);
+		g2.drawString(mp.gp.player.exp + "/" + mp.gp.player.nextLevelExp, textX+100, textY);	
+		textY += 32;		
+		g2.drawString("HP", textX, textY);
+		g2.drawString(mp.gp.player.life + "/" + mp.gp.player.maxLife, textX+100, textY);
 		textY += 32;
-		g2.drawString("Next Exp", textX, textY);
+		g2.drawString("MP", textX, textY);
+		g2.drawString(mp.gp.player.mana + "/" + mp.gp.player.maxMana, textX+100, textY);
 		textY += 32;
-		g2.drawString("Weapon", textX, textY);
+		g2.drawString("공격력", textX, textY);
+		g2.drawString(Integer.toString(mp.gp.player.attack), textX+100, textY);
 		textY += 32;
-		g2.drawString("Shield", textX, textY);
+		g2.drawString("방어력", textX, textY);
+		g2.drawString(Integer.toString(mp.gp.player.defence), textX+100, textY);
+
+
+//		textY += 32;
+//		g2.drawString("Next Exp", textX, textY);
+//		g2.drawString(Integer.toString(mp.gp.player.level), textX+200, textY);
+		textY += 32;
+//		g2.drawString("Weapon", textX, textY);
+//		g2.drawString(mp.gp.player.currentWeapon.name, textX+200, textY);
+//		textY += 32;
+//		g2.drawString("Shield", textX, textY);
+//		g2.drawString(mp.gp.player.currentShield.name, textX+200, textY);
 //		textY += 32;
 		
 	}
 	public void drawEquipInfo() {
 		
+		g2.setColor(Color.white);
+		g2.setFont(g2.getFont().deriveFont(30F));
+		int textX = 20;
+		int textY = 120;
+		
+		g2.drawString("무기: ", textX, textY);
+		g2.drawString(mp.gp.player.currentWeapon.name, textX+200, textY);
+		textY += 32;
+		g2.drawString("방어구: ", textX, textY);
+		g2.drawString(mp.gp.player.currentShield.name, textX+200, textY);
+		textY += 32;
+//		g2.drawString("장신구: ", textX, textY);
+//		g2.drawString(mp.gp.player.currentShield.name, textX+200, textY);
 	}
 	public void drawInventoryInfo(Entity entity) {
+		
 		g2.setColor(Color.white);
-		g2.setFont(g2.getFont().deriveFont(32F));
-		int x = 100;
-		int y = 100;
+		g2.setFont(g2.getFont().deriveFont(30F));
+		int x = 20;
+		int y = 120;
 		for(int i=0;i<mp.gp.player.inventory.size();i++) {
 //			g2.drawImage(entity.inventory.get(i).down1, x, y,null);
 			g2.drawString(entity.inventory.get(i).name, x, y);

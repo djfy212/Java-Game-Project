@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.FontFormatException;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,65 +13,58 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 import javax.swing.JButton;
 
+import data.RoundedButton;
+
+
 public class TitleUI {
-	//Main mainW;
+	
 	TitlePanel tp;
-	GamePanel gp;	
-	MenuPanel mp;
+	GamePanel gp;		
 	Graphics2D g2;
-	Font font;
-	
-	public JButton startBtn = new JButton();
-	public JButton continueBtn = new JButton();
-	public JButton exitBtn = new JButton();
-	
+	public RoundedButton startBtn = new RoundedButton();
+	public RoundedButton continueBtn = new RoundedButton();
+	public RoundedButton exitBtn = new RoundedButton();
+	File file = new File("Save.dat");
 	
 	public TitleUI(TitlePanel tp) {
 		this.tp = tp;
-		tp.setLayout(null);		
+		tp.setLayout(null);	
+		
 	}
-	
-	public Font settFont() {
-		//폰트 파일을 통해 폰트 생성
-		try {
-			InputStream is = getClass().getResourceAsStream("/font/CookieRun Bold.ttf");
-			font = Font.createFont(Font.TRUETYPE_FONT, is);
-		}catch(FontFormatException e) {
-			System.out.println(e);
-			//e.printStackTrace();
-		}catch(IOException e) {
-			System.out.println(e);
-			//e.printStackTrace();
-		}
-		return font;
-	}
+
 	
 	
 	public void drawTitlePage(Graphics2D g2) {
-		
-		
 		int btnWidth = 200;
 		int btnHeight = 50;
 		int btnX = tp.screenWidth/2 - btnWidth/2;
 		int btnY = tp.screenHeight/2;
 		
 		startBtn.setText("처음부터");
-		startBtn.setFont(font);
+		//startBtn.setFont(font);
 		startBtn.setSize(btnWidth,btnHeight);
 		startBtn.setLocation(btnX,btnY);
 		startBtn.setBackground(Color.LIGHT_GRAY);
 		addEventBtn(startBtn);
-		
-
+			
         continueBtn.setText("이어서");
         continueBtn.setSize(btnWidth,btnHeight);
         continueBtn.setLocation(btnX,btnY+btnHeight);
         continueBtn.setBackground(Color.LIGHT_GRAY);
+        
+        if (file.exists()) { 
+        	continueBtn.setEnabled(false); 
+        }
 		addEventBtn(continueBtn);
         
         exitBtn.setText("종료");
@@ -82,16 +76,20 @@ public class TitleUI {
         tp.add(startBtn);
         tp.add(continueBtn);
         tp.add(exitBtn);	
+        
+        
 	}
+
 	public void addEventBtn(JButton btn) {
 		btn.addActionListener(new MyActionListener());
-		btn.addMouseListener(new MyMouseListener());       
+		//btn.addMouseListener(new MyMouseListener());       
 	}
+	
     class MyActionListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {      
             JButton b = (JButton)e.getSource();
-            //Main.window.getContentPane().removeAll(); // 현재 패널 제거
+
            
             if(b.getText().equals(startBtn.getText())) {
 
@@ -101,7 +99,9 @@ public class TitleUI {
             	Main.mainPanel.getComponent(1).requestFocusInWindow();
             }
             else if(b.getText().equals(continueBtn.getText())) {
+            	gp.saveLoad.load();
             	tp.main.panelState = tp.main.game;
+            	gp.gameState = gp.playState;
             	Main.layout.show(Main.mainPanel,"gp");
             	Main.mainPanel.getComponent(1).setFocusable(true);
             	Main.mainPanel.getComponent(1).requestFocusInWindow();
@@ -112,26 +112,26 @@ public class TitleUI {
         	
         	if(b.getText().equals(exitBtn.getText())) {
             	System.exit(0);
-            }
-            
+            }    
         }
     }
 
-	class MyMouseListener extends MouseAdapter {
+//	class MyMouseListener extends MouseAdapter {
 
-		public void mouseEntered(MouseEvent e) {
-			JButton btn = (JButton) e.getSource();
-			btn.setBackground(Color.DARK_GRAY);
-		}
-		public void mouseExited(MouseEvent e) {
-			Component c = (Component) e.getSource();
-			c.setBackground(Color.LIGHT_GRAY);
-		}
-		public void mouseClicked(MouseEvent e) {
-			Component c = (Component) e.getSource();
-			c.setBackground(Color.LIGHT_GRAY);
-		}
-	}
+//		public void mouseEntered(MouseEvent e) {
+//			JButton btn = (JButton) e.getSource();
+//			btn.setBackground(Color.DARK_GRAY);
+//		}
+//		public void mouseExited(MouseEvent e) {
+//			Component c = (Component) e.getSource();
+//			c.setBackground(Color.LIGHT_GRAY);
+//		}
+//		public void mouseClicked(MouseEvent e) {
+//			Component c = (Component) e.getSource();
+//			c.setBackground(Color.LIGHT_GRAY);
+//		}
+//	}
+	
 
 }
 

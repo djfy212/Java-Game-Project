@@ -8,13 +8,19 @@ import javax.imageio.ImageIO;
 import main.GamePanel;
 import quest.Q_Kill_Slime;
 
-public class NPC_test extends Entity{
-	public NPC_test(GamePanel gp) {
+public class NPC_quest extends Entity{
+	
+	Q_Kill_Slime quest = new Q_Kill_Slime(gp);
+	
+	public NPC_quest(GamePanel gp) {
 		super(gp);
 		
 		direction = "down";
-		speed = 1;
-		type = type_major_npc;
+		speed = 0;
+		type = type_quest_npc;
+		questMarkOn = true;
+		request = false;
+		
 		
 		solidArea.x = 8;
 		solidArea.y = 16;
@@ -28,11 +34,7 @@ public class NPC_test extends Entity{
 		
 	}
 	public void getImage() {
-		try {
-			standing = ImageIO.read(getClass().getResourceAsStream("/characterImg/Char_Stand_2.png"));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		
 		up1 = setup("/player/testUp",gp.tileSize,gp.tileSize);
 		up2 = setup("/player/testUp",gp.tileSize,gp.tileSize);
 		down1 = setup("/player/testDown",gp.tileSize,gp.tileSize);
@@ -45,44 +47,31 @@ public class NPC_test extends Entity{
 	}
 	public void setDialogue() {
 		
-//		dialogues[0] = "Hello.";
-//		dialogues[1] = "Nice to meet you.";
-//		dialogues[2] = "Have you ever seen my item? \nIt looks like key.";
-//		dialogues[3] = "Good. Have a nice day.";
-		dialogues[0] = "안녕?";
-		dialogues[1] = "만나서 반가워."; 
-
-		
-	}
-	public void setAction() {
-		
-		actionLockCounter++;
-		
-		if(actionLockCounter == 120) {
-			
-			Random random = new Random();
-			int i = random.nextInt(100) + 1;
-			
-			if (i <= 25) {
-				direction = "up";
-			}
-			if (i > 25 && i <= 50) {
-				direction = "down";
-			}
-			if (i > 50 && i <= 75) {
-				direction = "left";
-			}
-			if (i > 75 && i <= 100) {
-				direction = "right";
-			}		
-			
-			actionLockCounter = 0;
+		if(request == false) {
+			dialogues[0] = "슬라임을 잡아주세요."; 
 		}
+		else{
+			dialogues[0] = "감사합니다."; 
+		}
+		
+		
 	}
 	public void speak() {
 		
+		setDialogue();
 		super.speak();
-
+		if(gp.player.speaking == false) {
+			
+			if(request == false) {			
+				gp.questList.add(new Q_Kill_Slime(gp));
+				questMarkOn = false;
+				request = true;
+			}
+			else {
+				gp.player.rewardQuest(quest.name);
+				questMarkOn = true;
+				request = false;
+			}
+		}
 	}
-	
 }

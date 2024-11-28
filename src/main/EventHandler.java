@@ -48,16 +48,18 @@ public class EventHandler {
 			canTouchEvent = true;
 		}
 		if(canTouchEvent == true) {
-			if(hit(0,27,16,"any") == true) { System.out.println("이벤트 발생"); }
-			else if(hit(0,10,10,"any") == true) { teleport(1,25,25); }//map1->map2
-			else if(hit(1,25,25,"any") == true) { 
-				teleport(0,10,10); 
-				gp.timeState += 1;
-				if(gp.timeState > 4) {
-					gp.dayCount+=1;
-					gp.timeState = 0;
-				}
-			}//map2->map1
+			if(hit(0,13,12,"any") == true) { teleport(1,34,12); }//house01->house02
+			if(hit(0,14,12,"any") == true) { teleport(1,34,12); }//house01->house02
+			else if(hit(1,35,12,"any") == true) { teleport(0,15,12); }//house02->house01
+			else if(hit(1,36,12,"any") == true) { teleport(0,15,12); }//house02->house01
+			
+			else if(hit(1,23,37,"any") == true) { teleport(2,23,28); }//house02->world01
+			else if(hit(2,23,27,"any") == true) { teleport(1,23,36); }//world01->house02
+			
+			else if(hit(2,5,21,"any") == true) { teleport(3,43,21); }//world01->field01
+			else if(hit(3,44,21,"any") == true) { gp.timeState += 1;
+													teleport(2,6,21); }//field01->world01
+			
 		}
 		
 	}
@@ -105,11 +107,7 @@ public class EventHandler {
 		tempCol = col;
 		tempRow = row;
 		
-//		gp.currentMap = map;
-//		gp.player.worldX = gp.tileSize * col;
-//		gp.player.worldY = gp.tileSize * row;
-//		previousEventX = gp.player.worldX;
-//		previousEventY = gp.player.worldY;
+		
 		canTouchEvent = false;
 	}
 	

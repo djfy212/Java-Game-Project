@@ -35,8 +35,9 @@ public class NPC_seller extends Entity{
 //		left2 = setup("/player/testLeft",gp.tileSize,gp.tileSize);
 //		right1 = setup("/player/testRight",gp.tileSize,gp.tileSize);
 //		right2 = setup("/player/testRight",gp.tileSize,gp.tileSize);
-		down1 = setup("/player/testDown",gp.tileSize,gp.tileSize);
-		down2 = setup("/player/testDown",gp.tileSize,gp.tileSize);
+		down1 = setup("/player/testRight",gp.tileSize,gp.tileSize);
+		down2 = setup("/player/testRight",gp.tileSize,gp.tileSize);
+
 	}
 	public void setDialogue() {
 		dialogues[0] = "안녕";

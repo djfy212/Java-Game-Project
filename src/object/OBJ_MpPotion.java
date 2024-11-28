@@ -14,6 +14,7 @@ public class OBJ_MpPotion extends Entity {
 		value = 3;
 		price = 25;
 		stackable = true;
+		//amount = 0;
 	}
 
 }

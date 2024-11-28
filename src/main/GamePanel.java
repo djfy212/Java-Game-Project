@@ -16,6 +16,7 @@ import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 
+import data.SaveLoad;
 import entity.Entity;
 import entity.Player;
 import quest.Quest;
@@ -23,20 +24,22 @@ import tile.TileManager;
 
 public class GamePanel extends JPanel implements Runnable {
 	
+	Thread timeThread = new Thread(new TimeThread());
+	public int timeCount = 0;
 	
 	Main main;
 	// SCREEN SETTING 스크린 사이즈를 설정합니다.
 	final int originalTileSize = 16; // 타일 기본 크기 : 16X16 타일
 	final int scale = 3; // 스케일 3배 확대
-	
+		
 	// 맵 타일 크기 설정입니다.
 	public final int tileSize = originalTileSize * scale; // 타일 크기 : 48X48 타일
 	public final int maxScreenCol = 20;// 가로 타일 개수 : 20 칸
 	public final int maxScreenRow = 12;// 세로 타일 개수 : 12 칸
-//	public final int screenWidth = tileSize * maxScreenCol; // 스크린 가로 픽셀 : 960 픽셀
-//	public final int screenHeight = tileSize * maxScreenRow; // 스크린 세로 픽셀 : 576 픽셀
-	public final int screenWidth = 1290; // 스크린 가로 픽셀 : 960 픽셀
-	public final int screenHeight = 720; // 스크린 세로 픽셀 : 576 픽셀
+	public final int screenWidth = tileSize * maxScreenCol; // 스크린 가로 픽셀 : 960 픽셀
+	public final int screenHeight = tileSize * maxScreenRow; // 스크린 세로 픽셀 : 576 픽셀
+//	public final int screenWidth = 1290; // 스크린 가로 픽셀 : 960 픽셀
+//	public final int screenHeight = 720; // 스크린 세로 픽셀 : 576 픽셀
 
 	// WORLD SETTINGS 맵 사이즈 세팅입니다.
 	public final int maxWorldCol = 50; // 가로 50칸
@@ -49,7 +52,7 @@ public class GamePanel extends JPanel implements Runnable {
 	int screenHeight2 = screenHeight;
 	BufferedImage tempScreen;
 	Graphics2D g2;
-
+	
 	// FPS
 	int FPS = 60;
 
@@ -60,6 +63,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public AssetSetter aSetter = new AssetSetter(this);
 	public GameUI ui = new GameUI(this);
 	public EventHandler eHandler = new EventHandler(this);
+	public SaveLoad saveLoad = new SaveLoad(this);
 	Thread gameThread;
 
 	// ENTITY AND OBJECT 엔티티와 오브젝트들을 담고 있습니다.
@@ -68,10 +72,14 @@ public class GamePanel extends JPanel implements Runnable {
 	public Entity npc[][] = new Entity[maxMap][10];
 	public Entity monster[][] = new Entity[maxMap][20];
 //	public InteractiveTile iTile[][] = new InteractiveTile[maxMap][50];
+	public ArrayList<Entity> projectileList = new ArrayList<Entity>();
 	public ArrayList<Entity> entityList = new ArrayList<>();
 	
 	// QUEST 설정
 	public ArrayList<Quest> questList = new ArrayList<>();
+	
+	// SKILL 설정 
+	public ArrayList<Entity> skillList = new ArrayList<>();
 
 	// 게임 내 상태 설정입니다.
 	public int gameState; // 게임 스테이트 저장용
@@ -79,6 +87,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public final int dialogueState = 2; // 태화창 표시 상태
 	public final int transitionState = 3; // 
 	public final int tradeState = 4;
+	public final int menuState = 5;
 	
 	// 게임 내 시간 흐름도 설정들
 	public int dayCount = 1;
@@ -88,13 +97,14 @@ public class GamePanel extends JPanel implements Runnable {
 	public final int evening = 2;
 	public final int night = 3;
 	
+	
 	public GamePanel(Main main) {
 		this.main = main;
 		this.setPreferredSize(new Dimension(screenWidth, screenHeight));
 		this.setBackground(Color.black);
 		this.setDoubleBuffered(true);
 		this.addKeyListener(keyH);
-		this.setFocusable(true);
+		//this.setFocusable(true);
 	}
 
 	//게임 셋업
@@ -108,7 +118,7 @@ public class GamePanel extends JPanel implements Runnable {
 		
 		dayCount = 1;			// 날짜 1
 		timeState = morning;	// 시간 아침
-		
+		currentMap = 2;
 		
 		tempScreen = new BufferedImage(screenWidth, screenHeight, BufferedImage.TYPE_INT_ARGB);
 		g2 = (Graphics2D)tempScreen.getGraphics();
@@ -131,6 +141,7 @@ public class GamePanel extends JPanel implements Runnable {
 
 		gameThread = new Thread(this);
 		gameThread.start();
+		timeThread.start();
 	}
 
 	public void stopThread() {
@@ -160,13 +171,14 @@ public class GamePanel extends JPanel implements Runnable {
 					update();
 					drawToTempScreen(); // draw everything to the buffered image
 					drawToScreen(); // draw the buffered image to the screen
+					
 				}
 				delta--;
 				drawCount++;		
 			}
 			if (timer >= 1000000000) {
 				if(main.panelState == main.game) {
-					System.out.println("gameFPS:" + drawCount + timeState);
+					System.out.println("gameFPS:" + drawCount);
 				}
 				drawCount = 0;
 				timer = 0;
@@ -193,6 +205,16 @@ public class GamePanel extends JPanel implements Runnable {
 					}
 					if (monster[currentMap][i].alive == false) {
 						monster[currentMap][i] = null;
+					}
+				}
+			}
+			for (int i = 0; i < projectileList.size(); i++) {
+				if (projectileList.get(i) != null) {
+					if (projectileList.get(i).alive == true) {
+						projectileList.get(i).update();
+					}
+					if (projectileList.get(i).alive == false) {
+						projectileList.remove(i);
 					}
 				}
 			}
@@ -236,6 +258,12 @@ public class GamePanel extends JPanel implements Runnable {
 				entityList.add(monster[currentMap][i]);
 			}
 		}
+		
+		for (int i = 0; i < projectileList.size(); i++) {
+			if (projectileList.get(i) != null) {
+				entityList.add(projectileList.get(i));
+			}
+		}
 
 		// SORT
 		Collections.sort(entityList, new Comparator<Entity>() {
@@ -254,13 +282,32 @@ public class GamePanel extends JPanel implements Runnable {
 		entityList.clear();
 
 		// UI 그리기
-		ui.draw(g2);
-
+		ui.draw(g2);	
+		
 	}
 
 	public void drawToScreen() {
 		Graphics g = getGraphics();
 		g.drawImage(tempScreen, 0, 0, screenWidth2, screenHeight2, null);
 		g.dispose();
+		
+	}
+	class TimeThread implements Runnable{
+
+		public void run() {
+			while (true) {
+				
+				if (main.panelState == main.game) {
+					timeCount++;
+					System.out.println(timeCount);
+					
+				}
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 }

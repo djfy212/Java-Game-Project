@@ -14,5 +14,6 @@ public class OBJ_HpPotion extends Entity{
 		value = 2;
 		price = 25;
 		stackable = true;
+		amount = 2;
 	}
 }

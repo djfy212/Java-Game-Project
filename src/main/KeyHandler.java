@@ -10,7 +10,8 @@ public class KeyHandler implements KeyListener{
 	TitlePanel tp;
 	MenuPanel mp;
 
-	public boolean upPressed, downPressed, leftPressed, rightPressed, enterPressed; 
+	public boolean upPressed, downPressed, leftPressed, rightPressed, enterPressed, shotKeyPressed;
+	public boolean skill1Pressed, skill2Pressed, slot1Pressed, slot2Pressed;
 
 	public KeyHandler(TitlePanel tp){
 		this.tp = tp;
@@ -51,14 +52,34 @@ public class KeyHandler implements KeyListener{
 	public void keyReleased(KeyEvent e) {
 		int code = e.getKeyCode();
 		
-		if(code == KeyEvent.VK_W)		
+		if(code == KeyEvent.VK_W)	
 			upPressed = false;
 		if(code == KeyEvent.VK_S)
 			downPressed = false;
 		if(code == KeyEvent.VK_A)
 			leftPressed = false;
 		if(code == KeyEvent.VK_D)
-			rightPressed = false;			
+			rightPressed = false;
+		if(code == KeyEvent.VK_X)
+			rightPressed = false;
+		if (code == KeyEvent.VK_J) {
+			shotKeyPressed = false;
+		}
+		if (code == KeyEvent.VK_K) {
+			skill1Pressed = false;
+		}
+		if (code == KeyEvent.VK_L) {
+			skill2Pressed = false;
+		}
+		if (code == KeyEvent.VK_I) {
+			slot1Pressed = false;
+		}
+		if (code == KeyEvent.VK_O) {
+			slot2Pressed = false;
+		}
+//		if (code == KeyEvent.VK_P) {
+//			slot3Pressed = false;
+//		}
 	}
 	
 	public void titleState(int code){}
@@ -68,18 +89,26 @@ public class KeyHandler implements KeyListener{
 		if (code == KeyEvent.VK_S) {downPressed = true;}		
 		if (code == KeyEvent.VK_A) {leftPressed = true;}		
 		if (code == KeyEvent.VK_D) {rightPressed = true;}
-					
+		// 엔터키 입력
+		if (code == KeyEvent.VK_ENTER) {
+			enterPressed = true;
+		}
+		if (code == KeyEvent.VK_J) { shotKeyPressed = true; }
+		if (code == KeyEvent.VK_K) { skill1Pressed = true; }
+		if (code == KeyEvent.VK_L) { skill2Pressed = true; }
+		if (code == KeyEvent.VK_I) { System.out.println("I"); slot1Pressed = true; }
+		if (code == KeyEvent.VK_O) { System.out.println("O"); slot2Pressed = true; }
+//		if (code == KeyEvent.VK_P) { Pressed = true; }
+//		if (code == KeyEvent.VK_X) {
+//			gp.gameState = gp.menuState;
+//		}
+		
 		// 메뉴 창 표시
 		if (code == KeyEvent.VK_ESCAPE) {
 			gp.main.panelState = gp.main.menu;	
         	Main.layout.show(Main.mainPanel,"mp");
         	Main.mainPanel.getComponent(2).setFocusable(true);
         	Main.mainPanel.getComponent(2).requestFocusInWindow();       	    	
-		}
-
-		// 엔터키 입력중
-		if (code == KeyEvent.VK_ENTER) {
-			enterPressed = true;
 		}
 	}
 	public void menuState(int code){
@@ -92,10 +121,12 @@ public class KeyHandler implements KeyListener{
 	}
 	public void dialogueState(int code) {
 		if(code == KeyEvent.VK_ENTER) {
-//			if(speaking == false) {
-//				gp.gameState = gp.playState;	//게임 복귀
-//			}
-			gp.gameState = gp.playState;	//게임 복귀	
+			
+			if(gp.player.speaking == false)
+				gp.gameState = gp.playState;	//게임 복귀	
+			else {
+				gp.npc[gp.currentMap][gp.player.speakNum].speak();
+			}
 		}
 	}
 
