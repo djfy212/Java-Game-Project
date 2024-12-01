@@ -112,7 +112,7 @@ public class RankingPanel extends JPanel implements Runnable {
 
         // 시간 랭킹 항목 출력 (우측)
         for (int i = 0; i < timeRanking.size(); i++) {
-            String rank = (i + 1) + ". " + timeRanking.get(i).getPlayerName() + " - " + timeRanking.get(i).getTime() + " sec";
+            String rank = (i + 1) + ". " + timeRanking.get(i).getPlayerName() + " - " + timeRanking.get(i).getTime();
             g2.drawString(rank, xOffset, y);
             y += 30; // 항목 간 간격
         }
