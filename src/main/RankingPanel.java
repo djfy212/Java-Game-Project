@@ -82,21 +82,40 @@ public class RankingPanel extends JPanel implements Runnable {
 
     // 랭킹 데이터 출력
     private void drawRanking() {
-        List<Ranking.PlayerScore> rankingList = rankings.getRanking(); // 랭킹 데이터 가져오기
+        List<Ranking.PlayerScore> scoreRanking = rankings.getScoreRanking(); // 점수 랭킹 데이터 가져오기
+        List<Ranking.PlayerTime> timeRanking = rankings.getTimeRanking(); // 시간 랭킹 데이터 가져오기
+        
         int x = 100;
         int y = 100;
+        int xOffset = SCREEN_WIDTH / 2 + 50; // 좌측과 우측을 나누기 위한 오프셋
 
         // 제목 출력
-        g2.drawString("Ranking List", SCREEN_WIDTH / 2 - 50, 50);
-        g2.drawLine(x, 60, SCREEN_WIDTH - 100, 60);
+        g2.drawString("Score Ranking", x, 50);
+        g2.drawLine(x, 60, SCREEN_WIDTH / 2 - 50, 60); // 점수 랭킹 선
 
-        // 각 랭킹 항목 출력
-        for (int i = 0; i < rankingList.size(); i++) {
-            String rank = (i + 1) + ". " + rankingList.get(i).getPlayerName() + " - " + rankingList.get(i).getScore();
+        // 점수 랭킹 항목 출력 (좌측)
+        for (int i = 0; i < scoreRanking.size(); i++) {
+            String rank = (i + 1) + ". " + scoreRanking.get(i).getPlayerName() + " - " + scoreRanking.get(i).getScore();
             g2.drawString(rank, x, y);
             y += 30; // 항목 간 간격
         }
-     
+
+        // 좌측과 우측 구분선
+        g2.setColor(Color.GRAY);
+        g2.drawLine(SCREEN_WIDTH / 2, 50, SCREEN_WIDTH / 2, SCREEN_HEIGHT - 150);
+        g2.setColor(Color.WHITE); // 색상 복원
+
+        // 제목 출력
+        y = 100; // y 값을 다시 초기화
+        g2.drawString("Time Ranking", xOffset, 50);
+        g2.drawLine(xOffset, 60, SCREEN_WIDTH - 100, 60); // 시간 랭킹 선
+
+        // 시간 랭킹 항목 출력 (우측)
+        for (int i = 0; i < timeRanking.size(); i++) {
+            String rank = (i + 1) + ". " + timeRanking.get(i).getPlayerName() + " - " + timeRanking.get(i).getTime() + " sec";
+            g2.drawString(rank, xOffset, y);
+            y += 30; // 항목 간 간격
+        }
     }
 
     // 반복 작업을 위한 스레드 실행
