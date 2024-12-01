@@ -111,14 +111,9 @@ public class TitleUI {
             }
 
             else if (b.getText().equals(rankingBtn.getText())) {
-                // 랭킹 보기 클릭 시 랭킹 리스트 표시
-                List<Ranking.PlayerScore> ranking = ((Ranking) rankings).getRanking();
-                StringBuilder rankingText = new StringBuilder();
-                for (int i = 0; i < ranking.size(); i++) {
-                    rankingText.append((i + 1) + ". " + ranking.get(i).getPlayerName() + " - " + ranking.get(i).getScore() + "\n");
-                }
-
-                JOptionPane.showMessageDialog(tp, rankingText.toString(), "랭킹", JOptionPane.INFORMATION_MESSAGE);
+                // 랭킹 보기 클릭 시 RankingPanel로 전환
+                tp.main.layout.show(Main.mainPanel, "ranking");
+                Main.mainPanel.getComponent(2).requestFocusInWindow();
             }
 
             else if(b.getText().equals(continueBtn.getText())) {

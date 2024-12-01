@@ -8,6 +8,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+
+
 //-------------------------------메인 클래스---------------------------
 // 이곳은 메인 클래스로 JFrame틀을 설정해줍니다. 각 패널들은 이 프레임 위에 생성됩니다.
 public class Main{
@@ -27,9 +29,12 @@ public class Main{
     TitlePanel titlePanel;
     GamePanel gamePanel;
     MenuPanel menuPanel;
+    RankingPanel rankingPanel;
+
 
     // 메인 생성자
     public Main() {
+    	
     	
         // JFrame 설정 	
         window = new JFrame("TEST Project");
@@ -44,12 +49,17 @@ public class Main{
         titlePanel = new TitlePanel(this);
         gamePanel = new GamePanel(this);
         menuPanel = new MenuPanel(this, gamePanel);
+        RankingPanel rankingPanel = new RankingPanel(this);
 
         
         // CardLayout에 패널들 추가
         mainPanel.add(titlePanel, "tp");
         mainPanel.add(gamePanel, "gp");
         mainPanel.add(menuPanel, "mp");
+        mainPanel.add(rankingPanel, "ranking");
+        
+        
+
 
         // JFrame에 메인 패널 추가
         window.add(mainPanel);
@@ -65,6 +75,10 @@ public class Main{
         gamePanel.startThread();
         menuPanel.startThread(); 
 
+    }
+    // TitlePanel을 보여주는 메서드 추가
+    public void showTitlePanel() {
+        layout.show(mainPanel, "tp"); // TitlePanel로 전환
     }
 		
 	public static void main(String[] args) {
