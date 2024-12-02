@@ -9,5 +9,6 @@ public class OBJ_Weapon_Normal extends Entity{
 
 		name = "평범한 지팡이";
 		attackValue = 2;
+		description = "공격력 + " + attackValue;
 	}
 }

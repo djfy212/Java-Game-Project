@@ -16,12 +16,12 @@ public class Mon_GreenSlime extends Entity{
 		type = type_monster;
 		name = "그린 슬라임";
 		speed = 1;
-		maxLife = 4;
+		maxLife = 10;
 		life = maxLife;
 		attack = 2;
 		defence = 1;
-		exp = 1;
-		elements = "stone";
+		exp = 2;
+		elements = "흙";
 		
 		solidArea.x = 3;
 		solidArea.y = 18;
@@ -64,6 +64,60 @@ public class Mon_GreenSlime extends Entity{
 			}
 			
 			actionLockCounter = 0;
+		}
+		
+	}
+public void update() {
+		
+		setAction();
+		
+		collisionOn = false;
+		targetOn = false;
+		gp.cChecker.checkTile(this);
+		gp.cChecker.checkObject(this, false);
+		gp.cChecker.checkEntity(this, gp.npc);
+		gp.cChecker.checkEntity(this, gp.monster);
+		gp.cChecker.checkMissileTarget(this, gp.monster);
+		boolean contactPlayer = gp.cChecker.checkPlayer(this);
+		
+		if(this.type == 2 && contactPlayer == true) {
+			if(gp.player.invincible == false) {
+				//we can give damage
+				gp.player.life -= 1;
+				gp.player.invincible = true;
+			}
+		}
+		
+		//IF COLLISION IS FALSE, PLAYER CAN MOVE
+		if(collisionOn == false) {
+			switch(direction) {
+			case "up": worldY -= speed; break;
+			case "down": worldY += speed; break;
+			case "left": worldX -= speed; break;
+			case "right": worldX += speed; break;
+			}
+		}
+		
+		spriteCounter++;
+		if(spriteCounter > 12) {
+			if(spriteNum == 1) {
+				spriteNum = 2;
+			}
+			else if(spriteNum == 2) {
+				spriteNum = 3;
+			}
+			else if(spriteNum == 3) {
+				spriteNum = 1;
+			}
+			spriteCounter = 0;
+		}
+		
+		if(invincible == true) {
+			invincibleCounter++;
+			if(invincibleCounter > 20) {
+				invincible = false;
+				invincibleCounter = 0;
+			}
 		}
 		
 	}

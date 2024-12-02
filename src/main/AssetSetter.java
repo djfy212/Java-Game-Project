@@ -3,6 +3,7 @@ package main;
 import entity.NPC_quest;
 import entity.NPC_seller;
 import entity.NPC_test;
+import monster.Mon_Butterfly;
 import monster.Mon_GreenSlime;
 //import object.OBJ_Box;
 //import object.OBJ_Door;
@@ -60,16 +61,20 @@ public class AssetSetter {
 		gp.monster[mapNum][i].worldY = gp.tileSize*20;
 		i++;
 		gp.monster[mapNum][i] = new Mon_GreenSlime(gp);
-		gp.monster[mapNum][i].worldX = gp.tileSize*25;
+		gp.monster[mapNum][i].worldX = gp.tileSize*28;
 		gp.monster[mapNum][i].worldY = gp.tileSize*20;
 		i++;
 		gp.monster[mapNum][i] = new Mon_GreenSlime(gp);
-		gp.monster[mapNum][i].worldX = gp.tileSize*10;
-		gp.monster[mapNum][i].worldY = gp.tileSize*18;
+		gp.monster[mapNum][i].worldX = gp.tileSize*40;
+		gp.monster[mapNum][i].worldY = gp.tileSize*30;
 		i++;
-		gp.monster[mapNum][i] = new Mon_GreenSlime(gp);
-		gp.monster[mapNum][i].worldX = gp.tileSize*10;
+		gp.monster[mapNum][i] = new Mon_Butterfly(gp);
+		gp.monster[mapNum][i].worldX = gp.tileSize*30;
 		gp.monster[mapNum][i].worldY = gp.tileSize*17;
+		i++;
+		gp.monster[mapNum][i] = new Mon_Butterfly(gp);
+		gp.monster[mapNum][i].worldX = gp.tileSize*19;
+		gp.monster[mapNum][i].worldY = gp.tileSize*10;
 		i++;
 	}
 	

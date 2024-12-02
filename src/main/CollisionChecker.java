@@ -58,6 +58,7 @@ public class CollisionChecker {
 			break;
 		}
 	}
+	
 	public int checkObject(Entity entity, boolean player) {
 		
 		int index = 999;
@@ -124,6 +125,43 @@ public class CollisionChecker {
 				if(entity.solidArea.intersects(target[gp.currentMap][i].solidArea)) {
 					if(target[gp.currentMap][i] != entity) {
 						entity.collisionOn = true;
+						index = i;
+					}					
+				}			
+				entity.solidArea.x = entity.solidAreaDefaultX;
+				entity.solidArea.y = entity.solidAreaDefaultY;
+				target[gp.currentMap][i].solidArea.x = target[gp.currentMap][i].solidAreaDefaultX;
+				target[gp.currentMap][i].solidArea.y = target[gp.currentMap][i].solidAreaDefaultY;
+			}		
+		}	
+		return index;
+	}
+	public int checkMissileTarget(Entity entity, Entity[][] target) {
+		
+		int index = 999;
+		
+		for(int i = 0; i < target[1].length; i++) {
+			
+			if(target[gp.currentMap][i] != null) {
+				
+				//Get entity's solid area position
+				entity.skillArea.x = entity.worldX -gp.tileSize*3 ;
+				entity.skillArea.y = entity.worldY -gp.tileSize*3 ;
+				entity.skillArea.width = gp.tileSize*7;
+				entity.skillArea.height = gp.tileSize*7;
+				
+				//Get the object's solid area position
+				target[gp.currentMap][i].solidArea.x = target[gp.currentMap][i].worldX + target[gp.currentMap][i].solidArea.x;
+				target[gp.currentMap][i].solidArea.y = target[gp.currentMap][i].worldY + target[gp.currentMap][i].solidArea.y;
+				
+				switch(entity.direction) {
+				case "up": entity.skillArea.y -= entity.speed; break;
+				case "down": entity.skillArea.y += entity.speed; break;
+				case "left": entity.skillArea.x -= entity.speed; break;
+				case "right": entity.skillArea.x += entity.speed; break;
+				}
+				if(entity.skillArea.intersects(target[gp.currentMap][i].solidArea)) {
+					if(target[gp.currentMap][i] != entity) {
 						index = i;
 					}					
 				}			

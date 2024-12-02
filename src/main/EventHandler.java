@@ -1,5 +1,7 @@
 package main;
 
+import entity.Entity;
+
 public class EventHandler {
 
 	GamePanel gp;
@@ -48,18 +50,33 @@ public class EventHandler {
 			canTouchEvent = true;
 		}
 		if(canTouchEvent == true) {
-			if(hit(0,13,12,"any") == true) { teleport(1,34,12); }//house01->house02
-			if(hit(0,14,12,"any") == true) { teleport(1,34,12); }//house01->house02
-			else if(hit(1,35,12,"any") == true) { teleport(0,15,12); }//house02->house01
-			else if(hit(1,36,12,"any") == true) { teleport(0,15,12); }//house02->house01
+			if(hit(0,20,26,"any") == true) { teleport(1,34,12); }//house01->house02
+			if(hit(0,21,26,"any") == true) { teleport(1,34,12); }//house01->house02
+			else if(hit(1,35,12,"any") == true) { teleport(0,22,26); }//house02->house01
+			else if(hit(1,36,12,"any") == true) { teleport(0,22,26); }//house02->house01
 			
 			else if(hit(1,23,37,"any") == true) { teleport(2,23,28); }//house02->world01
+			else if(hit(1,24,37,"any") == true) { teleport(2,23,28); }//house02->world01
+			
 			else if(hit(2,23,27,"any") == true) { teleport(1,23,36); }//world01->house02
 			
-			else if(hit(2,5,21,"any") == true) { teleport(3,43,21); }//world01->field01
-			else if(hit(3,44,21,"any") == true) { gp.timeState += 1;
-													teleport(2,6,21); }//field01->world01
+			else if(hit(2,8,26,"left") == true) { gp.player.respawnMon = true;
+													teleport(3,40,26); }//world01->field01
+			else if(hit(2,8,27,"left") == true) { gp.player.respawnMon = true;
+													teleport(3,40,27); }//world01->field01
+			else if(hit(2,8,28,"left") == true) { gp.player.respawnMon = true;
+													teleport(3,40,28); }//world01->field01
 			
+			else if(hit(3,41,26,"any") == true) { gp.player.timeFlow = true;
+													teleport(2,9,26); }//field01->world01
+			else if(hit(3,41,27,"any") == true) { gp.player.timeFlow = true;
+													teleport(2,9,27); }//field01->world01
+			else if(hit(3,41,28,"any") == true) { gp.player.timeFlow = true;
+													teleport(2,9,28); }//field01->world01
+			
+			else if(hit(2,15,16,"any") == true) {speak(gp.npc[2][0]);}
+			else if(hit(0,23,20,"right") == true) { healing(); }//침대 회복
+			else if(hit(0,23,21,"right") == true) { healing(); }//침대 회복
 		}
 		
 	}
@@ -91,13 +108,12 @@ public class EventHandler {
 		
 		return hit;
 	}
-	public void healingPool(int col, int row, int gameState) {
+	public void healing() {
 		if(gp.keyH.enterPressed == true) {
-			gp.gameState = gameState;
+			gp.player.timeFlow = true;
 			gp.player.life = gp.player.maxLife;
 			gp.player.mana = gp.player.maxMana;
-//			eventRect[map][col][row].eventDone = true; // 이벤트가 한번 발생 하면 끝
-//			canTouchEvent = false; // 이벤트 박스에 한번 닿으면 밖으로 나올 때까지 닿을 수 없음
+			gp.ui.addMessage("휴식");
 		}
 	}
 	public void teleport(int map, int col, int row) {
@@ -111,4 +127,11 @@ public class EventHandler {
 		canTouchEvent = false;
 	}
 	
+	public void speak(Entity entity) {
+		if(gp.keyH.enterPressed == true) {
+			gp.gameState = gp.tradeState;
+			gp.player.attackCanceled = true;
+			entity.speak();
+		}
+	}
 }

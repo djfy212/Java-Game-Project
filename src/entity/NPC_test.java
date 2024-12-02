@@ -49,8 +49,8 @@ public class NPC_test extends Entity{
 //		dialogues[1] = "Nice to meet you.";
 //		dialogues[2] = "Have you ever seen my item? \nIt looks like key.";
 //		dialogues[3] = "Good. Have a nice day.";
-		dialogues[0] = "안녕?";
-		dialogues[1] = "만나서 반가워."; 
+		dialogues[0][0] = "안녕?";
+		dialogues[0][1] = "만나서 반가워."; 
 
 		
 	}
@@ -81,8 +81,8 @@ public class NPC_test extends Entity{
 	}
 	public void speak() {
 		
-		super.speak();
-
+		facePlayer();
+		startDialogue(this, dialogueSet);
 	}
 	
 }

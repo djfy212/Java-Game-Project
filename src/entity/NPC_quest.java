@@ -48,30 +48,27 @@ public class NPC_quest extends Entity{
 	public void setDialogue() {
 		
 		if(request == false) {
-			dialogues[0] = "슬라임을 잡아주세요."; 
+			dialogues[0][0] = "슬라임을 잡아주세요."; 
 		}
 		else{
-			dialogues[0] = "감사합니다."; 
+			dialogues[0][0] = "감사합니다."; 
 		}
 		
 		
 	}
 	public void speak() {
 		
-		setDialogue();
+		facePlayer();
+		startDialogue(this,dialogueSet);
 		super.speak();
-		if(gp.player.speaking == false) {
-			
-			if(request == false) {			
-				gp.questList.add(new Q_Kill_Slime(gp));
-				questMarkOn = false;
-				request = true;
-			}
-			else {
-				gp.player.rewardQuest(quest.name);
-				questMarkOn = true;
-				request = false;
-			}
+		if (request == false) {
+			gp.questList.add(new Q_Kill_Slime(gp));
+			questMarkOn = false;
+			request = true;
+		} else {
+			gp.player.rewardQuest(quest.name);
+			questMarkOn = true;
+			request = false;
 		}
 	}
 }

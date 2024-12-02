@@ -40,8 +40,8 @@ public class NPC_seller extends Entity{
 
 	}
 	public void setDialogue() {
-		dialogues[0] = "안녕";
-		
+		dialogues[0][0] = "안녕";
+		dialogues[1][0] = "다음에 또 와요";
 	}
 	public void setItems() {
 		inventory.add(new OBJ_HpPotion(gp));
@@ -49,9 +49,11 @@ public class NPC_seller extends Entity{
 	}
 	public void speak() {
 		
-		super.speak();
+		facePlayer();
+		startDialogue(this,dialogueSet);
 		gp.gameState = gp.tradeState;
 		gp.ui.npc = this;
+		
 	}
 	
 }

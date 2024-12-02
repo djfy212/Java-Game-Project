@@ -20,14 +20,14 @@ public class TileManager {
 	public TileManager(GamePanel gp) {
 		this.gp = gp;
 		
-		tile = new Tile[10];
+		tile = new Tile[200];
 		mapTileNum = new int[gp.maxMap][gp.maxWorldCol][gp.maxWorldRow];
 		
 		getTileImage();
 		loadMap("/maps/house01.txt",0);
 		loadMap("/maps/house02.txt",1);
 		loadMap("/maps/world01.txt",2);
-		loadMap("/maps/field01.txt",3);
+		loadMap("/maps/map1.txt",3);
 	}
 	//타일 이미지 불러오기
 	public void getTileImage() {
@@ -37,6 +37,50 @@ public class TileManager {
 		setup(2, "water", true);
 		setup(3, "black", false);
 		setup(4, "black", true);
+		setup(110, "home_10", true);
+		setup(112, "home_12", false);
+		setup(113, "home_13", false);
+		setup(114, "home_14", true);
+		setup(115, "home_15", true);
+		setup(116, "home_16", true);
+
+		setup(120, "home_20", true);
+		setup(121, "home_21", true);
+		setup(122, "home_22", true);
+		setup(123, "home_23", true);
+		setup(124, "home_24", true);
+		setup(125, "home_25", true);
+		setup(130, "home_30", true);
+		setup(131, "home_31", true);		
+		setup(132, "home_32", true);
+		setup(133, "home_33", true);
+		setup(134, "home_34", true);
+		setup(135, "home_35", true);
+		setup(140, "home_40", false);
+		setup(141, "home_41", true);
+		setup(142, "home_42", true);
+		setup(145, "home_45", true);
+		setup(146, "home_46", true);
+		setup(147, "home_47", true);
+		setup(148, "home_48", false);
+		setup(150, "home_50", false);
+		setup(151, "home_51", false);
+		
+		setup(22, "forest_0", true);
+		setup(23, "forest_1", true);
+		setup(24, "forest_2", true);
+		setup(25, "forest_3", true);
+		setup(26, "forest_4", true);
+		setup(27, "forest_5", true);
+		setup(28, "forest_6", true);
+		setup(29, "forest_7", true);
+//		setup(30, "forest_8", true);
+		setup(31, "grass", false);
+		setup(81, "foresti_1", true);
+		setup(82, "foresti_2", true);
+		setup(83, "foresti_3", true);
+		setup(84, "foresti_4", true);
+		setup(85, "foresti_5", true);
 
 	}
 	public void setup(int index, String imageName, boolean collision) {
@@ -104,7 +148,10 @@ public class TileManager {
 			   worldY + gp.tileSize > gp.player.worldY - gp.player.screenY &&
 			   worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) {
 				
-				g2.drawImage(tile[tileNum].image, screenX, screenY, null);
+				if(tile[tileNum] != null) {
+					g2.drawImage(tile[tileNum].image, screenX, screenY, null);
+				}
+				
 				
 			}
 			worldCol++;

@@ -8,19 +8,15 @@ public class KeyHandler implements KeyListener{
 
 	GamePanel gp;
 	TitlePanel tp;
-	MenuPanel mp;
 
 	public boolean upPressed, downPressed, leftPressed, rightPressed, enterPressed, shotKeyPressed;
-	public boolean skill1Pressed, skill2Pressed, slot1Pressed, slot2Pressed;
+	public boolean attackPressed, skill1Pressed, skill2Pressed, skill3Pressed, slot1Pressed, slot2Pressed;
 
 	public KeyHandler(TitlePanel tp){
 		this.tp = tp;
 	}
 	public KeyHandler(GamePanel gp){
 		this.gp = gp;
-	}
-	public KeyHandler(MenuPanel mp){
-		this.mp = mp;
 	}
 
 	@Override
@@ -39,11 +35,12 @@ public class KeyHandler implements KeyListener{
 				else if(gp.gameState == gp.dialogueState) {
 					dialogueState(code);
 				}
-			}			
-		}
-		if(mp != null) {
-			if(mp.main.panelState == mp.main.menu) {
-				menuState(code);
+				else if(gp.gameState == gp.tradeState) {
+					tradeState(code);
+				}
+				else if(gp.gameState == gp.menuState) {
+					menuState(code);
+				}
 			}			
 		}
 
@@ -63,25 +60,45 @@ public class KeyHandler implements KeyListener{
 		if(code == KeyEvent.VK_X)
 			rightPressed = false;
 		if (code == KeyEvent.VK_J) {
-			shotKeyPressed = false;
-		}
-		if (code == KeyEvent.VK_K) {
+//			shotKeyPressed = false;
+			//attackPressed = false;
 			skill1Pressed = false;
 		}
-		if (code == KeyEvent.VK_L) {
+		if (code == KeyEvent.VK_K) {
 			skill2Pressed = false;
 		}
-		if (code == KeyEvent.VK_I) {
+		if (code == KeyEvent.VK_L) {
+			skill3Pressed = false;
+		}
+		if (code == KeyEvent.VK_U) {
 			slot1Pressed = false;
 		}
-		if (code == KeyEvent.VK_O) {
+		if (code == KeyEvent.VK_I) {
 			slot2Pressed = false;
 		}
-//		if (code == KeyEvent.VK_P) {
+//		if (code == KeyEvent.VK_O) {
 //			slot3Pressed = false;
 //		}
 	}
-	
+	public void tradeState(int code) {
+		if(code == KeyEvent.VK_ENTER) {
+			enterPressed = true;
+		}
+		if(gp.ui.subState == 0) {
+			if(code == KeyEvent.VK_W) {
+				gp.ui.commandNum--;
+				if(gp.ui.commandNum < 0) {
+					gp.ui.commandNum = 2;
+				}
+			}		
+			if(code == KeyEvent.VK_S) {
+				gp.ui.commandNum++;
+				if(gp.ui.commandNum > 2) {
+					gp.ui.commandNum = 0;
+				}
+			}
+		}
+	}
 	public void titleState(int code){}
 	public void gameState(int code) {
 		/// 플레이어 이동 키
@@ -93,40 +110,94 @@ public class KeyHandler implements KeyListener{
 		if (code == KeyEvent.VK_ENTER) {
 			enterPressed = true;
 		}
-		if (code == KeyEvent.VK_J) { shotKeyPressed = true; }
-		if (code == KeyEvent.VK_K) { skill1Pressed = true; }
-		if (code == KeyEvent.VK_L) { skill2Pressed = true; }
-		if (code == KeyEvent.VK_I) { System.out.println("I"); slot1Pressed = true; }
-		if (code == KeyEvent.VK_O) { System.out.println("O"); slot2Pressed = true; }
-//		if (code == KeyEvent.VK_P) { Pressed = true; }
+//		if (code == KeyEvent.VK_J) { shotKeyPressed = true; }
+		if (code == KeyEvent.VK_J) { skill1Pressed = true; }//attackPressed = true; }
+		if (code == KeyEvent.VK_K) { skill2Pressed = true; }
+		if (code == KeyEvent.VK_L) { skill3Pressed = true; }
+		if (code == KeyEvent.VK_U) { slot1Pressed = true; }
+		if (code == KeyEvent.VK_I) { slot2Pressed = true; }
+//		if (code == KeyEvent.VK_O) { Pressed = true; }
 //		if (code == KeyEvent.VK_X) {
 //			gp.gameState = gp.menuState;
 //		}
 		
 		// 메뉴 창 표시
 		if (code == KeyEvent.VK_ESCAPE) {
-			gp.main.panelState = gp.main.menu;	
-        	Main.layout.show(Main.mainPanel,"mp");
-        	Main.mainPanel.getComponent(2).setFocusable(true);
-        	Main.mainPanel.getComponent(2).requestFocusInWindow();       	    	
+ 
+			gp.gameState = gp.menuState;
+			gp.ui.menuCommand = 0;
+			gp.ui.menuCount = 0;
+			gp.ui.openMenu();
 		}
 	}
 	public void menuState(int code){
-		if (code == KeyEvent.VK_ESCAPE) {
-			mp.main.panelState = mp.main.game;	
-        	Main.layout.show(Main.mainPanel,"gp");
-        	Main.mainPanel.getComponent(1).setFocusable(true);
-        	Main.mainPanel.getComponent(1).requestFocusInWindow();
+
+		if(gp.ui.menuCommand != -1) {
+			if (code == KeyEvent.VK_ESCAPE) {
+				gp.gameState = gp.playState;
+			}
+			if (code == KeyEvent.VK_ENTER) {
+				enterPressed = true;
+			}
+			if(code == KeyEvent.VK_W) {
+				gp.ui.menuCommand--;
+				if(gp.ui.menuCommand < 0) {
+					gp.ui.menuCommand = 5;
+				}
+			}		
+			if(code == KeyEvent.VK_S) {
+				gp.ui.menuCommand++;
+				if(gp.ui.menuCommand > 5) {
+					gp.ui.menuCommand = 0;
+				}
+			}
 		}
+		else if (gp.ui.menuCommand == -1) {
+			if (gp.ui.menuCount == 2) {
+				if (code == KeyEvent.VK_W) {
+
+					gp.ui.skillCount--;
+					System.out.println(gp.ui.skillCount);
+					if (gp.ui.skillCount < 0) {
+						gp.ui.skillCount = 2;
+					}
+				}
+				if (code == KeyEvent.VK_S) {
+					gp.ui.skillCount++;
+					System.out.println(gp.ui.skillCount);
+					if (gp.ui.skillCount > 2) {
+						gp.ui.skillCount = 0;
+					}
+				}
+				if(code == KeyEvent.VK_ESCAPE) {
+					gp.ui.menuCommand = gp.ui.menuCount-1;
+				}
+				
+			}
+			if (gp.ui.menuCount == 4) {
+				if (code == KeyEvent.VK_W) {
+					gp.ui.itemCount--;
+					if (gp.ui.itemCount < 0) {
+						gp.ui.itemCount = 3;
+					}
+				}
+				if (code == KeyEvent.VK_S) {
+					gp.ui.itemCount++;
+					if (gp.ui.itemCount > 3) {
+						gp.ui.itemCount = 0;
+					}
+				}
+				if(code == KeyEvent.VK_ESCAPE) {
+					gp.ui.menuCommand = gp.ui.menuCount-1;
+				}
+			}
+		}
+		
 	}
 	public void dialogueState(int code) {
 		if(code == KeyEvent.VK_ENTER) {
-			
-			if(gp.player.speaking == false)
-				gp.gameState = gp.playState;	//게임 복귀	
-			else {
-				gp.npc[gp.currentMap][gp.player.speakNum].speak();
-			}
+			enterPressed = true;
+
 		}
 	}
 

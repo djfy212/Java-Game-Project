@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,6 +20,8 @@ import javax.swing.JPanel;
 import data.SaveLoad;
 import entity.Entity;
 import entity.Player;
+import entity.Projectile;
+import environment.EnvironmentManager;
 import quest.Quest;
 import tile.TileManager;
 
@@ -63,6 +66,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public AssetSetter aSetter = new AssetSetter(this);
 	public GameUI ui = new GameUI(this);
 	public EventHandler eHandler = new EventHandler(this);
+	EnvironmentManager eManager = new EnvironmentManager(this);
 	public SaveLoad saveLoad = new SaveLoad(this);
 	Thread gameThread;
 
@@ -79,7 +83,9 @@ public class GamePanel extends JPanel implements Runnable {
 	public ArrayList<Quest> questList = new ArrayList<>();
 	
 	// SKILL 설정 
+	public Projectile skill = new Projectile(this);
 	public ArrayList<Entity> skillList = new ArrayList<>();
+	public ArrayList<Entity> skillAllList = new ArrayList<>();
 
 	// 게임 내 상태 설정입니다.
 	public int gameState; // 게임 스테이트 저장용
@@ -113,16 +119,18 @@ public class GamePanel extends JPanel implements Runnable {
 		aSetter.setObject();	//오브젝트
 		aSetter.setNPC();		//NPC
 		aSetter.setMonster();	//몬스터
+		eManager.setup();
 		//playMusic(0);
 		gameState = playState;	//게임 상태 : 플레이 상태
 		
 		dayCount = 1;			// 날짜 1
 		timeState = morning;	// 시간 아침
-		currentMap = 2;
+		currentMap = 0;
 		
 		tempScreen = new BufferedImage(screenWidth, screenHeight, BufferedImage.TYPE_INT_ARGB);
 		g2 = (Graphics2D)tempScreen.getGraphics();
-		
+		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		skill.setSkill();
 		//setFullScreen();		
 	}
 	public void setFullScreen() {
@@ -144,9 +152,6 @@ public class GamePanel extends JPanel implements Runnable {
 		timeThread.start();
 	}
 
-	public void stopThread() {
-		gameThread = null;
-	}
 
 	@Override
 	public void run() {
@@ -280,7 +285,10 @@ public class GamePanel extends JPanel implements Runnable {
 		}
 		// EMPTY ENTITIY LIST
 		entityList.clear();
-
+		
+		// ENVIRONMENT
+		//eManager.draw(g2);
+		
 		// UI 그리기
 		ui.draw(g2);	
 		

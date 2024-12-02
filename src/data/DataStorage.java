@@ -17,6 +17,9 @@ public class DataStorage implements Serializable{
 	int coin;
 	
 	int currentMap;
+	int timeCount;	
+	int timeState;
+	int dayCount;
 	
 	// PLAYER INVENTORY
 	ArrayList<String> itemNames = new ArrayList<>();

@@ -28,93 +28,18 @@ import data.RoundedButton;
 
 public class TitleUI {
 	
-	TitlePanel tp;
-	GamePanel gp;		
+	TitlePanel tp;		
 	Graphics2D g2;
 	public RoundedButton startBtn = new RoundedButton();
 	public RoundedButton continueBtn = new RoundedButton();
 	public RoundedButton exitBtn = new RoundedButton();
-	File file = new File("Save.dat");
+	File file = new File("save.dat");
 	
 	public TitleUI(TitlePanel tp) {
 		this.tp = tp;
 		tp.setLayout(null);	
-		
 	}
 
-	
-	
-	public void drawTitlePage(Graphics2D g2) {
-		int btnWidth = 200;
-		int btnHeight = 50;
-		int btnX = tp.screenWidth/2 - btnWidth/2;
-		int btnY = tp.screenHeight/2;
-		
-		startBtn.setText("처음부터");
-		//startBtn.setFont(font);
-		startBtn.setSize(btnWidth,btnHeight);
-		startBtn.setLocation(btnX,btnY);
-		startBtn.setBackground(Color.LIGHT_GRAY);
-		addEventBtn(startBtn);
-			
-        continueBtn.setText("이어서");
-        continueBtn.setSize(btnWidth,btnHeight);
-        continueBtn.setLocation(btnX,btnY+btnHeight);
-        continueBtn.setBackground(Color.LIGHT_GRAY);
-        
-        if (file.exists()) { 
-        	continueBtn.setEnabled(false); 
-        }
-		addEventBtn(continueBtn);
-        
-        exitBtn.setText("종료");
-        exitBtn.setSize(btnWidth,btnHeight);
-        exitBtn.setLocation(btnX,btnY+btnHeight*2);
-        exitBtn.setBackground(Color.LIGHT_GRAY);
-		addEventBtn(exitBtn);
-
-        tp.add(startBtn);
-        tp.add(continueBtn);
-        tp.add(exitBtn);	
-        
-        
-	}
-
-	public void addEventBtn(JButton btn) {
-		btn.addActionListener(new MyActionListener());
-		//btn.addMouseListener(new MyMouseListener());       
-	}
-	
-    class MyActionListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {      
-            JButton b = (JButton)e.getSource();
-
-           
-            if(b.getText().equals(startBtn.getText())) {
-
-            	tp.main.panelState = tp.main.game;
-            	Main.layout.show(Main.mainPanel,"gp");
-            	Main.mainPanel.getComponent(1).setFocusable(true);
-            	Main.mainPanel.getComponent(1).requestFocusInWindow();
-            }
-            else if(b.getText().equals(continueBtn.getText())) {
-            	gp.saveLoad.load();
-            	tp.main.panelState = tp.main.game;
-            	gp.gameState = gp.playState;
-            	Main.layout.show(Main.mainPanel,"gp");
-            	Main.mainPanel.getComponent(1).setFocusable(true);
-            	Main.mainPanel.getComponent(1).requestFocusInWindow();
-
-            }
-        	Main.window.revalidate(); // 컴포넌트 갱신
-        	Main.window.repaint();    // 화면 갱신
-        	
-        	if(b.getText().equals(exitBtn.getText())) {
-            	System.exit(0);
-            }    
-        }
-    }
 
 //	class MyMouseListener extends MouseAdapter {
 

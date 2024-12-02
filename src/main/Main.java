@@ -26,7 +26,6 @@ public class Main{
     // 패녈 생성
     TitlePanel titlePanel;
     GamePanel gamePanel;
-    MenuPanel menuPanel;
 
     // 메인 생성자
     public Main() {
@@ -41,15 +40,13 @@ public class Main{
         mainPanel = new JPanel(layout);
         
         // 각 패널 생성 및 추가
-        titlePanel = new TitlePanel(this);
         gamePanel = new GamePanel(this);
-        menuPanel = new MenuPanel(this, gamePanel);
-
+        gamePanel.setupGame();
+        titlePanel = new TitlePanel(this, gamePanel);
         
         // CardLayout에 패널들 추가
         mainPanel.add(titlePanel, "tp");
         mainPanel.add(gamePanel, "gp");
-        mainPanel.add(menuPanel, "mp");
 
         // JFrame에 메인 패널 추가
         window.add(mainPanel);
@@ -61,9 +58,9 @@ public class Main{
         
         // 초기화 완료 메시지 및 스레드 시작
         titlePanel.startThread();
-        gamePanel.setupGame();
+       
         gamePanel.startThread();
-        menuPanel.startThread(); 
+
 
     }
 		

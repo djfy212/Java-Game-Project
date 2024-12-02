@@ -1,10 +1,13 @@
 package entity;
 
 import main.GamePanel;
+import skill.Skill_DoubleFire;
+import skill.Skill_Fireball;
+import skill.Skill_Firefly;
 
 public class Projectile extends Entity{
 
-	Entity user;
+	public Entity user;
 	
 	public Projectile(GamePanel gp) {
 		super(gp);
@@ -16,8 +19,7 @@ public class Projectile extends Entity{
 		this.direction = direction;
 		this.alive = alive;
 		this.user = user;
-		this.life = this.maxLife;
-		
+		this.life = this.maxLife;		
 		
 	}
 	public void update() {
@@ -25,7 +27,8 @@ public class Projectile extends Entity{
 		if(user == gp.player) {
 			int monsterIndex = gp.cChecker.checkEntity(this, gp.monster);
 			if(monsterIndex != 999) {
-				gp.player.damageMonster(monsterIndex, attack);
+				gp.player.damageElementMonster(monsterIndex, attack+ gp.player.attack, this);
+				
 				alive = false;
 			}
 		}if(user != gp.player) {
@@ -53,6 +56,13 @@ public class Projectile extends Entity{
 				spriteNum = 1;
 			}
 			spriteCounter = 0;
+		}
+	}
+	public void setSkill() {
+		if(gp.player.elements.equals("불")) {
+			gp.skillAllList.add(new Skill_Fireball(gp));
+			gp.skillAllList.add(new Skill_DoubleFire(gp));
+			gp.skillAllList.add(new Skill_Firefly(gp));			
 		}
 	}
 

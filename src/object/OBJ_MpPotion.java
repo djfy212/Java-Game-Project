@@ -10,11 +10,12 @@ public class OBJ_MpPotion extends Entity {
 		super(gp);
 
 		name = "MP Potion";
-		//down1 = setup("/object/mp_potion", gp.tileSize, gp.tileSize);
+		down1 = setup("/object/mp_potion", gp.tileSize, gp.tileSize);
 		value = 3;
 		price = 25;
 		stackable = true;
-		//amount = 0;
+		amount = 5;
+		description = "마나 + " + value;
 	}
 
 }

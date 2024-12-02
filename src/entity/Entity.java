@@ -19,18 +19,21 @@ public class Entity {
 	public BufferedImage up1, up2, down1, down2, left1, left2, right1, right2;
 	public BufferedImage att_up1, att_up2, att_down1, att_down2, att_left1, att_left2, att_right1, att_right2;
 	public BufferedImage image, questImage;	
-	public BufferedImage standing;
+	public BufferedImage standing, icon;
 	public Rectangle solidArea = new Rectangle(0,0,48,48);
+	public Rectangle skillArea = new Rectangle(0,0,0,0);
 	public Rectangle attackArea = new Rectangle(0,0,0,0);
 	public int solidAreaDefaultX, solidAreaDefaultY;
 	public boolean collision = false;
-	String dialogues[] = new String[20];
+	public boolean targetOn = false;
+	public String dialogues[][] = new String[20][20];
 	
 	//STATE
 	public int worldX, worldY;	
 	public String direction = "down";
 	public int spriteNum = 1;
-	int dialogueIndex = 0;
+	public int dialogueSet = 0;
+	public int dialogueIndex = 0;
 	public boolean collisionOn = false;
 	public boolean invincible = false;
 	boolean attacking = false;
@@ -46,7 +49,9 @@ public class Entity {
 	public int spriteCounter = 0;
 	public int actionLockCounter = 0;
 	public int invincibleCounter = 0;
-	public int shotAvailableCounter = 0;
+	public int shotAvailableCounter1 = 0;
+	public int shotAvailableCounter2 = 0;
+	public int shotAvailableCounter3 = 0;
 	public int potionCounter = 0;
 	int dyingCounter = 0;
 	int hpBarCounter = 0;
@@ -68,16 +73,24 @@ public class Entity {
 	public int coin;		//재화 골드
 	public Entity currentWeapon;//현재 무기
 	public Entity currentShield;//현재 방어구
-	public Projectile projectile;
+	public Projectile projectile;//스킬
+	public Projectile skill1; //스킬 1
+	public Projectile skill2; //스킬 2
+	public Projectile skill3; //스킬 3
+	public int skillLevel;	//스킬 레벨
 	public String elements; //속성
 	
+	public int statePoint = 2;
+	public int skillPoint = 2;
+	
+	public Projectile[] currentSkill = new Projectile[3];
 	//ITEM ATTRIBUTES 아이템 요소
 	public ArrayList<Entity> inventory = new ArrayList<>();
 	public final int maxInventorySize = 20;
 	public int value;
 	public int attackValue;	//공격력 값(무기)
 	public int defenceValue;//방어력 값(방어구)
-	public String description = "";//아이템 설명
+	public String description = "";// 설명
 	public int useCost;
 	public int price;
 	public boolean stackable = false;
@@ -109,32 +122,24 @@ public class Entity {
 	
 	public void setAction() {}
 	public void damageReaction() {}
+	public void speak() {}
 	//npc 대화 출력
-	public void speak() {
-		
+	public void facePlayer() {
 
-		gp.ui.currentDialogue = dialogues[dialogueIndex];
-		dialogueIndex++;
-		if(dialogues[dialogueIndex] == null) {
-			gp.player.speaking = false;
-			//gp.keyH.enterPressed = false;
-			dialogueIndex = 0;
-		}
 		//대화 시 방향 전환
 		switch(gp.player.direction) {
-		case "up":
-			direction = "down";
-			break;
-		case "down":
-			direction = "up";
-			break;
-		case "left":
-			direction = "right";
-			break;
-		case "right":
-			direction = "left";
-			break;
+		case "up": direction = "down";break;
+		case "down": direction = "up";break;
+		case "left": direction = "right";break;
+		case "right": direction = "left";break;
 		}
+	}
+	public void startDialogue(Entity entity, int setNum) {
+		
+		gp.gameState = gp.dialogueState;
+		gp.ui.npc = entity;
+		dialogueSet = setNum;
+		
 	}
 	//업데이트
 	public void update() {
@@ -142,10 +147,12 @@ public class Entity {
 		setAction();
 		
 		collisionOn = false;
+		targetOn = false;
 		gp.cChecker.checkTile(this);
 		gp.cChecker.checkObject(this, false);
 		gp.cChecker.checkEntity(this, gp.npc);
 		gp.cChecker.checkEntity(this, gp.monster);
+		gp.cChecker.checkMissileTarget(this, gp.monster);
 		boolean contactPlayer = gp.cChecker.checkPlayer(this);
 		
 		if(this.type == 2 && contactPlayer == true) {
@@ -201,18 +208,22 @@ public class Entity {
 			case "up":
 				if(spriteNum == 1) {image = up1;}
 				if(spriteNum == 2) {image = up2;}
+				if(spriteNum == 3) {image = up1;}
 				break;
 			case "down":
 				if(spriteNum == 1) {image = down1;}
-				if(spriteNum == 2) {image = down2;}			
+				if(spriteNum == 2) {image = down2;}	
+				if(spriteNum == 3) {image = down1;}
 				break;
 			case "left":
 				if(spriteNum == 1) {image = left1;}
 				if(spriteNum == 2) {image = left2;}
+				if(spriteNum == 3) {image = left1;}
 				break;
 			case "right":
 				if(spriteNum == 1) {image = right1;}
-				if(spriteNum == 2) {image = right2;}			
+				if(spriteNum == 2) {image = right2;}
+				if(spriteNum == 3) {image = right1;}
 				break;
 			}
 			

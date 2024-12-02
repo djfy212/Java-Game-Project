@@ -10,6 +10,7 @@ public class OBJ_Shield_Normal extends Entity{
 		
 		name = "평범한 옷";
 		defenceValue = 1;
+		description = "방어력 + " + defenceValue;
 	}
 
 }

@@ -39,7 +39,7 @@ public class MenuPanel extends JPanel implements Runnable {
 	public String usedBtn = "";
 	
 	Thread menuThread;	
-	public KeyHandler keyH = new KeyHandler(this);
+//	public KeyHandler keyH = new KeyHandler();
 	public MenuUI ui = new MenuUI(this);
 	
 	public RoundedButton charBtn = new RoundedButton();
@@ -55,7 +55,7 @@ public class MenuPanel extends JPanel implements Runnable {
 		this.gp = gp;
 		setBackground(new Color(0x009A7B4F));
 		this.setPreferredSize(new Dimension(gp.screenWidth, gp.screenHeight));
-		this.addKeyListener(keyH);
+//		this.addKeyListener(keyH);
 		this.setLayout(null);
 
 		menuState = charState;

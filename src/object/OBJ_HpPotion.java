@@ -10,10 +10,11 @@ public class OBJ_HpPotion extends Entity{
 		super(gp);
 
 		name = "HP Potion";
-		//down1 = setup("/object/hp_potion", gp.tileSize, gp.tileSize);
+		down1 = setup("/object/hp_potion", gp.tileSize, gp.tileSize);
 		value = 2;
 		price = 25;
 		stackable = true;
-		amount = 2;
+		amount = 5;
+		description = "체력 + " + value;
 	}
 }
