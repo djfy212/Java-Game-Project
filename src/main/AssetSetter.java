@@ -40,7 +40,7 @@ public class AssetSetter {
 		gp.npc[mapNum][i].worldY = gp.tileSize*15;
 		i++;
 		gp.npc[mapNum][i] = new NPC_quest(gp);
-		gp.npc[mapNum][i].worldX = gp.tileSize*10;
+		gp.npc[mapNum][i].worldX = gp.tileSize*14;
 		gp.npc[mapNum][i].worldY = gp.tileSize*27;
 	}
 	//몬스터 세팅

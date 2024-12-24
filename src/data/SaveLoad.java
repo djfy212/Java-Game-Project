@@ -42,6 +42,7 @@ public class SaveLoad {
 			DataStorage ds = new DataStorage();
 
 			
+			
 			ds.level = gp.player.level;
 			ds.maxLife = gp.player.maxLife;
 			ds.life = gp.player.life;
@@ -109,6 +110,7 @@ public class SaveLoad {
 
 			// Read the DataStorage object
 			DataStorage ds = (DataStorage)ois.readObject();
+			
 	        
 			
 			gp.player.level = ds.level;

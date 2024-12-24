@@ -21,6 +21,8 @@ public class DataStorage implements Serializable{
 	int timeState;
 	int dayCount;
 	
+	int currentX;
+	int currentY;
 	// PLAYER INVENTORY
 	ArrayList<String> itemNames = new ArrayList<>();
 	ArrayList<Integer> itemAmounts = new ArrayList<>();

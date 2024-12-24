@@ -161,12 +161,13 @@ public class TitlePanel extends JPanel implements Runnable {
 
            
             if(b.getText().equals(startBtn.getText())) {
-
+            	
             	main.panelState = main.game;
             	gp.gameState = gp.playState;
             	Main.layout.show(Main.mainPanel,"gp");
             	Main.mainPanel.getComponent(1).setFocusable(true);
             	Main.mainPanel.getComponent(1).requestFocusInWindow();
+
             }
             else if(b.getText().equals(continueBtn.getText())) {
             	

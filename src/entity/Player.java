@@ -32,7 +32,8 @@ public class Player extends Entity {
 	public boolean attackCanceled = false;
 	public boolean timeFlow = false;
 	public boolean respawnMon = false;
-
+	public boolean resetGame = false;
+	
 	public Player(GamePanel gp, KeyHandler keyH) {
 
 		super(gp);
@@ -60,7 +61,13 @@ public class Player extends Entity {
 		setDefaultPosition();
 	}
 	// 플레이어 관련 메소드
-
+	
+	public void newGame() {
+		setDefaultValues();
+		setDefaultPosition();
+		setItems();
+		setSkills();
+	}
 	public void setDefaultValues() {
 
 		speed = 4;
@@ -75,7 +82,7 @@ public class Player extends Entity {
 		exp = 0;
 		nextLevelExp = 5;
 		strength = 1;
-		coin = 0;
+		coin = 100;
 
 		elements = "불";
 		currentWeapon = new OBJ_Weapon_Normal(gp);
@@ -189,6 +196,12 @@ public class Player extends Entity {
 				direction = "left";
 			} else if (keyH.rightPressed == true) {
 				direction = "right";
+			}
+			if(keyH.speedUpPressed == true) {
+				speed = 8;
+			}
+			if(keyH.speedUpPressed == false) {
+				speed = 4;
 			}
 
 			// CHECK TILE COLLISION
@@ -359,6 +372,12 @@ public class Player extends Entity {
 			gp.aSetter.setMonster();
 			gp.player.respawnMon = false;
 		}
+		if(resetGame == true) {
+        	gp.setupGame();
+            gp.player.newGame();
+            gp.timeCount = 0;
+            resetGame = false;
+		}
 	}
 
 	public void healing(String text) {
@@ -436,6 +455,7 @@ public class Player extends Entity {
 			attacking = false;
 
 		}
+		
 	}
 
 	public void pickUpObject(int i) {
@@ -484,6 +504,10 @@ public class Player extends Entity {
 				}
 
 				life -= damage;
+				if(life <= 0) {
+
+					gp.gameState = gp.gameOutState;
+				}
 				invincible = true;
 			}
 		}

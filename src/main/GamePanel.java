@@ -94,6 +94,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public final int transitionState = 3; // 
 	public final int tradeState = 4;
 	public final int menuState = 5;
+	public final int gameOutState = 6;
 	
 	// 게임 내 시간 흐름도 설정들
 	public int dayCount = 1;
@@ -287,7 +288,7 @@ public class GamePanel extends JPanel implements Runnable {
 		entityList.clear();
 		
 		// ENVIRONMENT
-		//eManager.draw(g2);
+		eManager.draw(g2);
 		
 		// UI 그리기
 		ui.draw(g2);	

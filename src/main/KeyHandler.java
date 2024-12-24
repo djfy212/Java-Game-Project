@@ -11,6 +11,7 @@ public class KeyHandler implements KeyListener{
 
 	public boolean upPressed, downPressed, leftPressed, rightPressed, enterPressed, shotKeyPressed;
 	public boolean attackPressed, skill1Pressed, skill2Pressed, skill3Pressed, slot1Pressed, slot2Pressed;
+	public boolean speedUpPressed;
 
 	public KeyHandler(TitlePanel tp){
 		this.tp = tp;
@@ -40,6 +41,9 @@ public class KeyHandler implements KeyListener{
 				}
 				else if(gp.gameState == gp.menuState) {
 					menuState(code);
+				}
+				else if(gp.gameState == gp.gameOutState) {
+					gameOutState(code);
 				}
 			}			
 		}
@@ -79,6 +83,9 @@ public class KeyHandler implements KeyListener{
 //		if (code == KeyEvent.VK_O) {
 //			slot3Pressed = false;
 //		}
+		if(code == KeyEvent.VK_SHIFT) {
+			speedUpPressed = false;
+		}
 	}
 	public void tradeState(int code) {
 		if(code == KeyEvent.VK_ENTER) {
@@ -96,6 +103,23 @@ public class KeyHandler implements KeyListener{
 				if(gp.ui.commandNum > 2) {
 					gp.ui.commandNum = 0;
 				}
+			}
+		}
+		else if(gp.ui.subState == 1) {
+			if(code == KeyEvent.VK_W) {
+				gp.ui.shopItemNum--;
+				if(gp.ui.shopItemNum < 0) {
+					gp.ui.shopItemNum = 1;
+				}
+			}		
+			if(code == KeyEvent.VK_S) {
+				gp.ui.shopItemNum++;
+				if(gp.ui.shopItemNum > 1) {
+					gp.ui.shopItemNum = 0;
+				}
+			}
+			if(code == KeyEvent.VK_ESCAPE) {
+				gp.gameState = gp.playState;
 			}
 		}
 	}
@@ -120,7 +144,9 @@ public class KeyHandler implements KeyListener{
 //		if (code == KeyEvent.VK_X) {
 //			gp.gameState = gp.menuState;
 //		}
-		
+		if(code == KeyEvent.VK_SHIFT) {
+			speedUpPressed = true;
+		}
 		// 메뉴 창 표시
 		if (code == KeyEvent.VK_ESCAPE) {
  
@@ -157,14 +183,14 @@ public class KeyHandler implements KeyListener{
 				if (code == KeyEvent.VK_W) {
 
 					gp.ui.skillCount--;
-					System.out.println(gp.ui.skillCount);
+					
 					if (gp.ui.skillCount < 0) {
 						gp.ui.skillCount = 2;
 					}
 				}
 				if (code == KeyEvent.VK_S) {
 					gp.ui.skillCount++;
-					System.out.println(gp.ui.skillCount);
+					
 					if (gp.ui.skillCount > 2) {
 						gp.ui.skillCount = 0;
 					}
@@ -195,6 +221,12 @@ public class KeyHandler implements KeyListener{
 		
 	}
 	public void dialogueState(int code) {
+		if(code == KeyEvent.VK_ENTER) {
+			enterPressed = true;
+
+		}
+	}
+	public void gameOutState(int code) {
 		if(code == KeyEvent.VK_ENTER) {
 			enterPressed = true;
 

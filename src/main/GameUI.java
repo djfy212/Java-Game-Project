@@ -5,7 +5,10 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,7 +21,6 @@ import object.OBJ_MpPotion;
 public class GameUI {
 	BufferedImage standImage;
 	GamePanel gp;
-	GamePanel gp2;
 	Graphics2D g2;
 	Font fontB;
 	Font fontR;
@@ -31,11 +33,18 @@ public class GameUI {
 	int subState = 0;
 	int menuCount = 0;
 	int counter = 0;
+	String announceBuy = "";
+	public int shopItemNum = 0;
 	public int skillCount = 0; // 현재 선택한 스킬
 	public int itemCount = 0;	// 현재 선택한 아이템
 	public Entity npc;
 	OBJ_HpPotion hpPotion;
 	OBJ_MpPotion mpPotion;	
+
+	
+    private Rectangle mainMenuButton;
+    private Rectangle loadButton;
+    private BufferedImage gameOverImage;
 	public GameUI(GamePanel gp) {
 		this.gp = gp;
 		// 폰트 파일을 통해 폰트 생성
@@ -53,7 +62,7 @@ public class GameUI {
 		}
 		hpPotion = new OBJ_HpPotion(gp);
 		mpPotion = new OBJ_MpPotion(gp);
-		standImage = new BufferedImage(gp.screenWidth,gp.screenHeight,BufferedImage.TYPE_INT_ARGB);
+
 	}
 	public void addMessage(String text) {
 		
@@ -93,6 +102,12 @@ public class GameUI {
 			openMenu();
 			drawMenuScreen();
 		}
+		// GAME OUT STATE
+		if(gp.gameState == gp.gameOutState) {
+			//drawGameOutScreen();
+			drawGameOverScreen();
+		}
+		
 	}
 	public void drawMainUI() {
 		// WINDOW ///대화창 크기, 위치 설정
@@ -252,7 +267,6 @@ public class GameUI {
 		int standWidth = gp.tileSize * 9;
 		int standHeight = gp.tileSize * 18;
 		
-		Graphics2D g2d = (Graphics2D)standImage.getGraphics();
 		
 		int npcIndex = gp.cChecker.checkEntity(gp.player, gp.npc);
 		if(gp.npc[gp.currentMap][npcIndex].type == 9) {
@@ -261,7 +275,6 @@ public class GameUI {
 			g2.drawImage(gp.npc[gp.currentMap][npcIndex].standing, x+standWidth+ gp.tileSize*2, y-height*2 + gp.tileSize*2 + gp.tileSize/2, 
 							standWidth-20, standHeight-20, null);			
 		}
-		g2d.dispose();
 		
 		/// 대화창 출력
 		drawSubWindow(x, y, width, height);
@@ -364,7 +377,53 @@ public class GameUI {
 		g2.drawString("취소", x, y);
 	}
 	public void trade_buy() {
-		
+		int npcIndex = gp.cChecker.checkEntity(gp.player, gp.npc);
+		g2.setFont(g2.getFont().deriveFont(20F));
+		int x = gp.tileSize*4;
+		int y = gp.tileSize;
+		int width = gp.tileSize*6;
+		int height = gp.tileSize*5;
+		drawSubWindow(x,y,width,height);
+		x = gp.tileSize*4+20;
+		y = gp.tileSize+12;
+		width = gp.tileSize * 5+5;
+		height = gp.tileSize ;
+		for(int i=0;i<gp.npc[gp.currentMap][npcIndex].inventory.size();i++) {
+			if(gp.npc[gp.currentMap][npcIndex].inventory.get(0) != null) {
+				drawSubWindow2(x,y,width,height);
+//				g2.drawImage(entity.inventory.get(i).down1, x, y,null);
+				g2.setColor(Color.white);
+				g2.drawString(gp.npc[gp.currentMap][npcIndex].inventory.get(i).name, x+5, y+20);
+				
+				
+				String s = "가격: "+gp.npc[gp.currentMap][npcIndex].inventory.get(i).price;
+				g2.drawString(s, x+gp.tileSize*3,y+20);
+										
+			}
+			y += height;
+		}
+		x = gp.tileSize * 4 + 20;
+		y = gp.tileSize + 12;
+		g2.setColor(new Color(200, 200, 200, 210));
+		g2.fillRoundRect(x, y+(height*shopItemNum), width, height, 20, 20);
+		int myCoin = gp.player.coin;
+		int price = gp.npc[gp.currentMap][npcIndex].inventory.get(shopItemNum).price;
+		if(gp.keyH.enterPressed == true) {
+			if( myCoin - price  < 0) {
+				//g2.drawString("구매 불가", x+gp.tileSize*8,y+20);
+				announceBuy = gp.npc[gp.currentMap][npcIndex].inventory.get(shopItemNum).name + "구매 불가";
+				System.out.println(myCoin+" " + price);
+			}
+			else {
+				String itemname = gp.npc[gp.currentMap][npcIndex].inventory.get(shopItemNum).name;
+				int index = gp.player.searchItemInInventory(itemname);
+				gp.player.inventory.get(index).amount+= 1;
+				//g2.drawString("구매 완료", x+gp.tileSize*8,y+20);
+				announceBuy = gp.npc[gp.currentMap][npcIndex].inventory.get(shopItemNum).name + "구매 완료";
+				gp.player.coin -= gp.npc[gp.currentMap][npcIndex].inventory.get(shopItemNum).price;
+			}
+		}	
+		g2.drawString(announceBuy, x+gp.tileSize*8,y+20);
 	}
 	public void trade_sell() {
 		
@@ -489,6 +548,9 @@ public class GameUI {
 		textY += 32;
 		g2.drawString("방어력", textX, textY);
 		g2.drawString(Integer.toString(gp.player.defence), textX+gp.tileSize, textY);
+		textX += 150;
+		g2.drawString("골드: ", textX, textY);
+		g2.drawString(Integer.toString(gp.player.coin), textX+gp.tileSize, textY);
 		
 		//drawSubWindow(gp.tileSize*3,gp.tileSize*6,gp.tileSize*2,gp.tileSize);
 		x = gp.tileSize*4;
@@ -512,7 +574,6 @@ public class GameUI {
 				y += 20;
 			}
 		}
-		
 	}
 	public void skillScreen() {
 		g2.setFont(g2.getFont().deriveFont(15F));
@@ -536,7 +597,6 @@ public class GameUI {
 			}
 		}
 		//회색 바
-		//skillCount = 0;
 		x = gp.tileSize * 4 + 20;
 		y = gp.tileSize + 12;
 		g2.setColor(new Color(200, 200, 200, 210));
@@ -663,4 +723,110 @@ public class GameUI {
 		int x = gp.screenWidth / 2 - length / 2;
 		return x;
 	}
+	
+	public void drawGameOutScreen() {
+		g2.setColor(Color.BLACK);
+		g2.fillRect(0,0,gp.screenWidth,gp.screenHeight);
+		g2.setColor(Color.white);
+		g2.setFont(g2.getFont().deriveFont(30F));
+		g2.drawString("게임 아웃",gp.screenWidth/2,gp.screenHeight/2);
+		if(gp.keyH.enterPressed == true) {
+			
+			gp.main.panelState = gp.main.title;
+			Main.layout.show(Main.mainPanel,"tp");
+        	Main.mainPanel.getComponent(0).setFocusable(true);
+        	Main.mainPanel.getComponent(0).requestFocusInWindow();
+        	gp.main.gamePanel = new GamePanel(gp.main);
+        	gp.main.gamePanel.setupGame();
+        	gp.main.gamePanel.startThread();
+		}
+	}
+	
+	public void drawGameOverScreen() {
+//	    String text = "Game Over";
+//	    g2.setFont(fontB.deriveFont(80F));
+//	    g2.setColor(Color.RED);
+//	    int x = getXforCenteredText(text);
+//	    int y = gp.screenHeight / 2 - 100; // 텍스트 위치 조정
+//	    g2.drawString(text, x, y);
+		
+		 // 이미지를 중앙에 그리기
+	    if (gameOverImage != null) {
+	        int imgX = (gp.screenWidth - gameOverImage.getWidth()) / 2;
+	        int imgY = (gp.screenHeight - gameOverImage.getHeight()) / 2 - 50; // 위치 조정
+	        g2.drawImage(gameOverImage, imgX, imgY, null);
+	    }
+
+	    // 버튼 크기 및 위치
+	    int buttonWidth = 300;
+	    int buttonHeight = 50;
+	    int buttonX = (gp.screenWidth - buttonWidth) / 2;
+	    int mainMenuButtonY = gp.screenHeight / 2 + 50;
+	    int loadButtonY = gp.screenHeight / 2 + 120;
+
+	    // "메인 화면으로" 버튼 그리기
+	    drawButton(g2, buttonX, mainMenuButtonY, buttonWidth, buttonHeight, "메인 화면으로");
+
+	    // "불러오기" 버튼 그리기
+	    drawButton(g2, buttonX, loadButtonY, buttonWidth, buttonHeight, "불러오기");
+
+	    // 마우스 클릭 이벤트 추가
+	    MouseAdapter mouseAdapter = new MouseAdapter() {
+	        @Override
+	        public void mouseClicked(MouseEvent e) {
+	            int mouseX = e.getX();
+	            int mouseY = e.getY();
+
+	            // 메인 메뉴 버튼 클릭 영역 확인
+	            if (mouseX >= buttonX && mouseX <= buttonX + buttonWidth
+	                    && mouseY >= mainMenuButtonY && mouseY <= mainMenuButtonY + buttonHeight&&gp.gameState == gp.gameOutState) {
+	                System.out.println("메인 화면으로 버튼 클릭");
+	                
+
+	                // Main 클래스의 panelState를 title로 설정
+	                gp.main.panelState = gp.main.title;
+
+	                // CardLayout을 사용하여 titlePanel로 전환
+	                Main.layout.show(Main.mainPanel, "tp"); 
+
+	                // TitlePanel 화면 다시 그리기
+	                gp.main.titlePanel.repaint();
+	                gp.removeMouseListener(this); // 이벤트 중복 방지
+					gp.player.resetGame = true;
+	            }
+
+
+	            // 불러오기 버튼 클릭 영역 확인
+	            if (mouseX >= buttonX && mouseX <= buttonX + buttonWidth
+	                    && mouseY >= loadButtonY && mouseY <= loadButtonY + buttonHeight &&gp.gameState == gp.gameOutState) {
+	                System.out.println("불러오기 버튼 클릭");
+	                
+	                gp.gameState = gp.playState; // 플레이 상태로 전환
+	                gp.removeMouseListener(this); // 이벤트 중복 방지
+	                gp.saveLoad.load(); // 저장 데이터 로드
+
+	            }
+	        }
+	    };	    
+
+	    // 마우스 리스너 추가
+	    gp.addMouseListener(mouseAdapter);
+	}
+	 private void drawButton(Graphics2D g2, int x, int y, int width, int height, String text) {
+	        // 버튼 배경
+	        g2.setColor(new Color(200, 200, 200)); // 연한 회색
+	        g2.fillRoundRect(x, y, width, height, 15, 15);
+
+	        // 버튼 테두리
+	        g2.setColor(new Color(150, 150, 150)); // 진한 회색
+	        g2.setStroke(new BasicStroke(3));
+	        g2.drawRoundRect(x, y, width, height, 15, 15);
+
+	        // 버튼 텍스트
+	        g2.setFont(fontR.deriveFont(30F));
+	        g2.setColor(Color.BLACK); // 텍스트 색상
+	        int textX = x + (width - g2.getFontMetrics().stringWidth(text)) / 2;
+	        int textY = y + (height + g2.getFontMetrics().getAscent()) / 2 - 5;
+	        g2.drawString(text, textX, textY);
+	    }
 }
